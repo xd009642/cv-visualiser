@@ -1,0 +1,19 @@
+[package]
+name = "cv-gui"
+version = "0.1.0"
+authors = ["xd009642 <danielmckenna93@gmail.com>"]
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+eframe = "0.13.0"
+serde = { version = "1", features = ["derive"], optional = true }
+
+[features]
+default = []
+http = ["eframe/http"]
+
+[profile.release]
+opt-level = 2

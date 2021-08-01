@@ -1,2 +1,2 @@
 [workspace]
-members = ["cv-subscriber", "frontend"]
+members = ["cv-subscriber", "cv-gui"]

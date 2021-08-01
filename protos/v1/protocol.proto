@@ -1,0 +1,13 @@
+syntax "proto3";
+
+enum Event {
+    Enter = 0;
+    Push = 1
+    Exit = 2;
+    Close = 3;
+}
+
+
+message Event {
+    oneof 
+}

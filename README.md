@@ -27,3 +27,12 @@ I anticipate using protobuf to transfer the values and then a frontend app
 displays them in a timeline. Then something like the jaeger dashboard for
 viewing spans and when you select 1..N spans you can see all the values
 received in sequence with the field names.
+
+## Prior Art
+
+* [Bonsai](https://open-ephys.org/bonsai)
+* [Opentelemetry](https://opentelemetry.io/)
+* [ImageWatch](https://docs.opencv.org/2.4/doc/tutorials/introduction/windows_visual_studio_image_watch/windows_visual_studio_image_watch.html#windows-visual-studio-image-watch)
+* [Tracing](https://github.com/tokio-rs/tracing)
+* [Valuable](https://github.com/tokio-rs/valuable)
+* [tokio-console](https://github.com/tokio-rs/console)

@@ -36,3 +36,5 @@ received in sequence with the field names.
 * [Tracing](https://github.com/tokio-rs/tracing)
 * [Valuable](https://github.com/tokio-rs/valuable)
 * [tokio-console](https://github.com/tokio-rs/console)
+* [robokite PoC](https://github.com/alsuren/robokite/pull/1)
+* [Zooming a billion trace events at 60fps](https://thume.ca/2021/03/14/iforests)

@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package cv.visualiser.protocol;
+
+import "v1/common.proto";
+
+
+
+message Update {
+    oneof event {
+        common.Span new_span = 1;
+    }
+}

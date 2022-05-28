@@ -1,4 +1,7 @@
 syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+package cv.visualiser.common;
 
 message SpanId {
     uint64 id = 1;
@@ -6,6 +9,15 @@ message SpanId {
 
 message MetaId {
     uint64 id = 1;
+}
+
+message Span {
+    SpanId id = 1;
+}
+
+message TimedSpan {
+    SpanId id = 1;
+    google.protobuf.Timestamp time = 2;
 }
 
 message Location {

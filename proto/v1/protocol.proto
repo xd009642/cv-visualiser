@@ -4,9 +4,14 @@ package cv.visualiser.protocol;
 
 import "v1/common.proto";
 
+service Watcher {
+    rpc Watch(WatchRequest) returns (stream Event) {}
+}
 
+message WatchRequest {
+}
 
-message Update {
+message Event {
     oneof event {
         common.Span new_span = 1;
     }

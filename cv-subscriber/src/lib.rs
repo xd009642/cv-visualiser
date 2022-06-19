@@ -1,4 +1,5 @@
 use crate::server::*;
+use crate::visitor::ImageVisitor;
 use std::net::SocketAddr;
 use std::thread;
 use tokio::runtime;
@@ -7,6 +8,8 @@ use tracing_core::{span, subscriber::Subscriber, Event};
 use tracing_subscriber::{layer::Context, prelude::*, registry::LookupSpan, Layer};
 
 pub mod server;
+pub mod utils;
+pub mod visitor;
 
 pub struct Builder {
     address: SocketAddr,
@@ -47,13 +50,36 @@ impl ImageLayer {
     pub fn new() -> (Self, ImageServer) {
         todo!();
     }
+
+    fn parent_context<S>(
+        &self,
+        attrs: &span::Attributes<'_>,
+        ctx: &Context<'_, S>,
+    ) -> Option<span::Id>
+    where
+        S: Subscriber + for<'a> LookupSpan<'a>,
+    {
+        attrs.parent().cloned().or_else(|| {
+            if attrs.is_contextual() {
+                ctx.lookup_current().map(|span| span.id())
+            } else {
+                None
+            }
+        })
+    }
 }
 
 impl<S> Layer<S> for ImageLayer
 where
     S: Subscriber + for<'a> LookupSpan<'a>,
 {
-    fn on_new_span(&self, attrs: &span::Attributes<'_>, id: &span::Id, ctx: Context<'_, S>) {}
+    fn on_new_span(&self, attrs: &span::Attributes<'_>, id: &span::Id, ctx: Context<'_, S>) {
+        let root = self
+            .parent_context(attrs, &ctx)
+            .unwrap_or_else(|| id.clone());
+        let mut visitor = ImageVisitor::default();
+        attrs.record(&mut visitor);
+    }
 
     fn on_event(&self, event: &Event<'_>, ctx: Context<'_, S>) {}
 

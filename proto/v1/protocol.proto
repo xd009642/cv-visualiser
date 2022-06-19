@@ -13,6 +13,12 @@ service TraceService {
     rpc Event(EventMessage) returns (EventResponse);
 }
 
+message CreateSpanRequest {
+    common.SpanId parent = 1;
+    google.protobuf.Timestamp time = 2;
+    string name = 3;
+    repeated Field fields = 3;
+}
 
 message EventMessage {
     common.SpanId span = 1;

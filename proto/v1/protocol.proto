@@ -1,18 +1,36 @@
 syntax = "proto3";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 
 package cv.visualiser.protocol;
 
 import "v1/common.proto";
 
-service Watcher {
-    rpc Watch(WatchRequest) returns (stream Event) {}
+service TraceService {
+    // Create a span given the parent span. For root spans the parent ID should be 0.
+    rpc CreateSpan(common.TimedSpan) returns (common.SpanId);
+    rpc CloseSpan(common.TimedSpan) returns (google.protobuf.Empty);
+    rpc Event(EventMessage) returns (EventResponse);
 }
 
-message WatchRequest {
+
+message EventMessage {
+    common.SpanId span = 1;
+    google.protobuf.Timestamp time = 2;
+    repeated Field fields = 3;
 }
 
-message Event {
-    oneof event {
-        common.Span new_span = 1;
+message Field {
+    string name = 1;
+    oneof data {
+        common.Image image = 2;
+        uint64 field_id = 3;
     }
+}
+
+message EventResponse {
+    // So for all the fields provided any big ones we'll give the client a unique ID for the field.
+    // This will be "span global" so may be repeated outside the span but can then be used to refer to
+    // the field again
+    map<string, uint64> field_ids = 1;
 }

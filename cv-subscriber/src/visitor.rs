@@ -1,3 +1,8 @@
+/// Works on visiting everything we should be sending out.
+///
+/// TODO:
+/// * Should collect more than just images and try and get any other data as it may be
+/// hyperparameters
 use crate::utils::*;
 use crate::*;
 use std::collections::HashMap;

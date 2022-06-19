@@ -1,5 +1,6 @@
 use crate::server::*;
 use crate::visitor::ImageVisitor;
+use std::collections::{HashMap, HashSet};
 use std::net::SocketAddr;
 use std::thread;
 use tokio::runtime;
@@ -11,12 +12,20 @@ pub mod server;
 pub mod utils;
 pub mod visitor;
 
+#[derive(Hash, Clone)]
+pub struct Image;
+
+/// So thoughts on interning. I could make an interner here or just make it on the server side and
+/// send out images as soon as I get them _out of laziness_. I should do something though
+pub type ImageInterner = HashSet<Image>;
+
 pub struct Builder {
     address: SocketAddr,
 }
 
 pub struct ImageLayer {
-    tx: mpsc::Sender<()>,
+    tx: mpsc::Sender<ImageVisitor>,
+    images: HashMap<Option<span::Id>, ImageInterner>,
 }
 
 impl Builder {
@@ -67,6 +76,20 @@ impl ImageLayer {
             }
         })
     }
+
+    fn publish_images(&self, visitor: ImageVisitor) {
+        use mpsc::error::TrySendError;
+        match self.tx.try_reserve() {
+            Ok(permit) => {
+                // Send images to server using our permit
+                permit.send(visitor);
+            }
+            Err(TrySendError::Closed(_)) => {}
+            Err(TrySendError::Full(_)) => {}
+        }
+        // Force a flush if we're filling up
+        let _capacity = self.tx.capacity();
+    }
 }
 
 impl<S> Layer<S> for ImageLayer
@@ -77,11 +100,17 @@ where
         let root = self
             .parent_context(attrs, &ctx)
             .unwrap_or_else(|| id.clone());
-        let mut visitor = ImageVisitor::default();
+        let mut visitor = ImageVisitor::new(Some(root));
         attrs.record(&mut visitor);
+        self.publish_images(visitor);
     }
 
-    fn on_event(&self, event: &Event<'_>, ctx: Context<'_, S>) {}
+    fn on_event(&self, event: &Event<'_>, ctx: Context<'_, S>) {
+        let id = ctx.lookup_current().map(|x| x.id());
+        let mut visitor = ImageVisitor::new(id);
+        event.record(&mut visitor);
+        self.publish_images(visitor);
+    }
 
     fn on_enter(&self, id: &span::Id, cx: Context<'_, S>) {}
 

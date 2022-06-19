@@ -1,19 +1,34 @@
 use crate::utils::*;
+use crate::*;
 use std::collections::HashMap;
 use std::fmt;
-use tracing_core::field::Visit;
-use tracing_core::Field;
+use tracing_core::{field::Visit, span, Field};
 use valuable::Value;
 
-#[derive(Clone, Default)]
 pub struct ImageVisitor {
-    images: HashMap<Field, ()>,
+    id: Option<span::Id>,
+    images: HashMap<Field, u64>,
+}
+
+impl ImageVisitor {
+    pub fn new(root: Option<span::Id>) -> Self {
+        Self {
+            id: root,
+            images: HashMap::new(),
+        }
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.images.is_empty()
+    }
 }
 
 impl Visit for ImageVisitor {
     fn record_value(&mut self, field: &Field, value: valuable::Value<'_>) {
         if is_image(&value) {
-            self.images.insert(field.clone(), ());
+            // Urgh I think I want to do an interner thingy where I pop images in and if they
+            // didn't get exist I get an ID and then I just store that Id in places
+            self.images.insert(field.clone(), 0);
         }
     }
 

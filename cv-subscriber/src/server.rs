@@ -1,3 +1,4 @@
+use crate::visitor::ImageVisitor;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use tokio::sync::mpsc;
 
@@ -6,7 +7,7 @@ use tokio::sync::mpsc;
 // the inputs and outputs and transmit them again that is _pain_. But also, can we do this in a way
 // that's actually nice for the user to use?
 pub struct ImageServer {
-    incoming: mpsc::Receiver<()>,
+    incoming: mpsc::Receiver<ImageVisitor>,
 }
 
 impl ImageServer {

@@ -11,12 +11,12 @@ use tracing_core::{field::Visit, span, Field};
 use valuable::Value;
 
 pub struct ImageVisitor {
-    id: Option<span::Id>,
+    id: Option<u64>,
     images: HashMap<Field, u64>,
 }
 
 impl ImageVisitor {
-    pub fn new(root: Option<span::Id>) -> Self {
+    pub fn new(root: Option<u64>) -> Self {
         Self {
             id: root,
             images: HashMap::new(),

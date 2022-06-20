@@ -17,7 +17,7 @@ message CreateSpanRequest {
     common.SpanId parent = 1;
     google.protobuf.Timestamp time = 2;
     string name = 3;
-    repeated Field fields = 3;
+    repeated Field fields = 4;
 }
 
 message EventMessage {

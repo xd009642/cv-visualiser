@@ -4,7 +4,7 @@ fn main() {
     let dirs = &["../proto"];
 
     tonic_build::configure()
-        .build_client(true)
+        .build_server(true)
         .compile(files, dirs)
         .unwrap();
 }

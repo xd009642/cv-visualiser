@@ -28,6 +28,13 @@ displays them in a timeline. Then something like the jaeger dashboard for
 viewing spans and when you select 1..N spans you can see all the values
 received in sequence with the field names.
 
+## Sub-projects
+
+* `cv-collector` - collects images and data for querying by GUI
+* `cv-subscriber` - implementation of the tracing subscriber and client to add to application
+* `cv-gui` - user interface to inspect images
+* `demo` - future demo application demonstrating the concept
+
 ## Prior Art
 
 * [Bonsai](https://open-ephys.org/bonsai)
